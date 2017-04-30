@@ -36,7 +36,7 @@ class ExtractionTest extends FunSuite {
 
     val temperatures : DataFrame = spark.read.csv( Extraction.getClass.getResource("/2015_.csv").getPath )
 
-    val result = Extraction.locateTemparure(2015, stations, temperatures)
+    val result = Extraction.locateTemperatures(2015, stations, temperatures)
 
     var shouldBe = Seq( (LocalDate.of(2015, 8, 11), Location(37.35, -78.433), 27.3),
                         (LocalDate.of(2015, 12, 6), Location(37.358, -78.438), 0.0),
@@ -45,19 +45,21 @@ class ExtractionTest extends FunSuite {
     assert( result === shouldBe)
   }
 
-  test("when calculate avg temprature '2015': should return correct data") {
+   test("when calculate avg temprature '2015': should return correct data") {
 
     val stations : DataFrame = spark.read.csv( Extraction.getClass.getResource("/stations_.csv").getPath )
 
     val temperatures : DataFrame = spark.read.csv( Extraction.getClass.getResource("/2015_.csv").getPath )
 
-    val result2 = Extraction.locateTemparure(2015, stations, temperatures)
+    val result2 = Extraction.locateTemperatures(2015, stations, temperatures)
 
     val result = Extraction.locationYearlyAverageRecords(result2).toList
 
     val shouldBe = Seq( (Location(37.358, -78.438), 1.0), (Location(37.35, -78.433), 27.3) ).toList
 
     assert( result === shouldBe)
+
+    Extraction.spark.close()
   }
 
 }

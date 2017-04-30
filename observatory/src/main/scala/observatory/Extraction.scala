@@ -45,10 +45,10 @@ object Extraction {
 
     val temperatures : DataFrame = spark.read.csv( Extraction.getClass.getResource(temperaturesFile).getPath )
 
-    locateTemparure(year, stations, temperatures)
+    locateTemperatures(year, stations, temperatures)
   }
 
-  def locateTemparure(year: Int, stations : DataFrame, temperatures: DataFrame) : Iterable[(LocalDate, Location, Double)] = {
+  def locateTemperatures(year: Int, stations : DataFrame, temperatures: DataFrame) : Iterable[(LocalDate, Location, Double)] = {
     val stationsDF = stations.toDF("stn", "wban", "latitude", "longitude")
       .na.fill("", Seq("stn", "wban") )
       .withColumn("identifier", identifier( col("stn"), col("wban") ) )
