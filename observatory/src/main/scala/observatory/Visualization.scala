@@ -7,7 +7,10 @@ import com.sksamuel.scrimage.{Image, Pixel}
   */
 object Visualization {
 
-  val N : Int = 8
+  val p : Int = 2
+
+  // Assume all distance in meters
+  val distanceThreshold = 1000.0
 
   type TemperatureColor = (Int, Color)
 
@@ -22,12 +25,9 @@ object Visualization {
     (-60, Color(0, 0, 0) )
   )
 
-  def distance(x: Location, y: Location) : Double = {
+  def distanceBetweenLocations(x: Location, y: Location) : Double = {
 
-    val pi : Double = 3.14159265358979323846264338327950288419716939937510582097494459230781640628
-
-    def toRadian(d: Double) : Double = (d * pi / 180.toDouble)
-    //val deltaLat = math.abs(x.lat - y.lat)
+    val earthRadius : Double = 6371000
 
     val deltaLong = math.abs(x.lon.toRadians - y.lon.toRadians)
 
@@ -35,21 +35,26 @@ object Visualization {
 
     val partB : Double = math.cos(x.lat.toRadians) * math.cos(y.lat.toRadians) * math.cos(deltaLong.toRadians)
 
-    val delta : Double = math.acos(partA + partB)
+    val deltaInRadians : Double = math.acos(partA + partB)
 
-//    val partA : Double =   math.sin( deltaLat / 2) * math.sin( deltaLat / 2)
-//
-//    val partB : Double = math.cos(x.lat) * math.cos(y.lat) * math.sin(deltaLong / 2) * math.sin(deltaLong / 2)
-//
-//    val innerSum : Double = partA + partB
-//
-//    val delta = 2 * math.asin( math.sqrt( innerSum ) )
+    val result = earthRadius * deltaInRadians
 
-    val earthRadius : Double = 6371.toDouble
+    val distance = BigDecimal(result).setScale(2, BigDecimal.RoundingMode.HALF_DOWN).toDouble
 
-    val result = earthRadius * delta
+    if (distance > 1) distance else 0
+  }
 
-    BigDecimal(result).setScale(3, BigDecimal.RoundingMode.HALF_UP).toDouble
+  def inverseDistance(x: Location, temperatures: Iterable[(Location, Double)] ) : Double = {
+
+    val (nominator, denominator ) = temperatures
+
+      .par.map( y => ( ( 1 / math.pow( distanceBetweenLocations(x, y._1 ), p ) ), y._2) )
+
+      .par.map( z => (z._1 * z._2, z._1) )
+
+      .reduce( (x, y) => (x._1 + y._1, x._2 + y._2) )
+
+    nominator / denominator
   }
 
   /**
@@ -57,10 +62,9 @@ object Visualization {
     * @param location Location where to predict the temperature
     * @return The predicted temperature at `location`
     */
-  def predictTemperature(temperatures: Iterable[(Location, Double)], location: Location): Double = {
-    // ref:  https://en.wikipedia.org/wiki/Inverse_distance_weighting
-    ???
-  }
+  def predictTemperature(temperatures: Iterable[(Location, Double)], location: Location): Double =
+    temperatures.find(t => t._1 == location) match { case Some(r) => r._2 case None => inverseDistance(location, temperatures) }
+
 
   /**
     * @param points Pairs containing a value and its associated color

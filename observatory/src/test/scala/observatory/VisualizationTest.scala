@@ -15,9 +15,9 @@ class VisualizationTest extends FunSuite with Checkers {
     val x = Location(50.066389, -5.714722)
     val y = Location(58.643889, -3.07)
 
-    val distance : Double =  953.779 // Actual: 968.9 & we are loosing around 10 km
+    val distance : Double =  953779.11 // Actual: 968.9 & we are loosing around 10 km
 
-    val result = Visualization.distance(x, y)
+    val result = Visualization.distanceBetweenLocations(x, y)
 
     assert(result == distance)
   }
@@ -28,7 +28,7 @@ class VisualizationTest extends FunSuite with Checkers {
 
     val distance : Double =  0 // Actual: 968.9 & we are loosing around 10 km
 
-    val result = Visualization.distance(x, y)
+    val result = Visualization.distanceBetweenLocations(x, y)
 
     assert(result == distance)
   }
