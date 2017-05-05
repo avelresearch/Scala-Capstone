@@ -60,4 +60,36 @@ class VisualizationTest extends FunSuite with Checkers {
     assert(result === Color(191,0,64))
   }
 
+  test("List((-98.83145445740537,Color(255,0,0)), (32.053536491879356,Color(0,0,255))), value = -98.83145445740537"){
+    val value : Double = -98.83145445740537
+
+    val list : List[(Double, Color)] = List((-98.83145445740537,Color(255,0,0)), (32.053536491879356,Color(0,0,255)))
+
+    val result = Visualization.interpolateColor(list, value)
+
+    assert(result === Color(255,0,0) )
+  }
+
+  test("List((1.0,Color(255,0,0)), (23.053046156462315,Color(0,0,255))) value = -9.0"){
+
+    val value : Double = -9.0
+
+    val list : List[(Double, Color)] = List((1.0,Color(255,0,0)), (23.053046156462315,Color(0,0,255)))
+
+    val result = Visualization.interpolateColor(list, value)
+
+    assert(result === Color(255,0,0) )
+  }
+
+  test("List((1.0,Color(255,0,0)), (23.053046156462315,Color(0,0,255))) value = 24.0"){
+
+    val value : Double = 24.0
+
+    val list : List[(Double, Color)] = List((1.0,Color(255,0,0)), (23.053046156462315,Color(0,0,255)))
+
+    val result = Visualization.interpolateColor(list, value)
+
+    assert(result === Color(0,0,255) )
+  }
+
 }

@@ -14,6 +14,7 @@ object Visualization {
 
   type TemperatureColor = (Int, Color)
 
+  // For the reference only
   val temperatureColors: List[TemperatureColor] = List(
     (60, Color(255, 255, 255) ),
     (32, Color(255, 0, 0) ),
@@ -75,33 +76,54 @@ object Visualization {
 
     def localRound(v : Double) : Int = BigDecimal(v).setScale(0, BigDecimal.RoundingMode.HALF_UP).toInt
 
-    val pointsColor = points.toList.sortWith(_._1 < _._1)
 
-    val partitions = pointsColor.partition(_._1 < value)
+        val pointsColor = points.toList.sortWith(_._1 < _._1)
 
-    val f = ( partitions._1.headOption, partitions._2.lastOption )
+        val partitions = pointsColor.map(x => (x, localRound(x._1))).partition(_._2 <= localRound(value))
 
-    val c0: Color = f._1 match { case Some( (_, c: Color) ) => c case None => Color(0, 0, 0) }
+        val f = (partitions._1.headOption, partitions._2.lastOption)
 
-    val v0 : Double = f._1 match { case Some( (v: Double, _) ) => v case None => if (pointsColor.size > 0) pointsColor.head._1 else 0 }
+        val c0: Option[Color] = f._1 match {
+          case Some(((_, c: Color), _)) => Some(c)
+          case None => None
+        }
 
-    val c1: Color = f._2 match { case Some( (_, c: Color) ) => c case None => Color(0, 0, 0) }
+        val v0: Option[Double] = f._1 match {
+          case Some(((v: Double, _), _)) => Some(v)
+          case None => None
+        }
 
-    val v1 : Double = f._2 match { case Some( (v: Double, _) ) => v case None => if (pointsColor.size > 0) pointsColor.last._1 else 0  }
+        val c1: Option[Color] = f._2 match {
+          case Some(((_, c: Color), _)) => Some(c)
+          case None => None
+        }
 
-    // TODO: use math abs
-    val k : Double =  ( value - v0 ) / ( v1 - v0)
+        val v1: Option[Double] = f._2 match {
+          case Some(((v: Double, _), _)) => Some(v)
+          case None => None
+        }
 
-    println(s"Vals: $value # $v0 # $v1 " + (v1 - v0) )
-    println("Koeficient:" + k)
+        // TODO: use math abs
+        if (v0 != None && c0 != None && v1 != None && c1 != None) {
+          val k = (value - v0.get) / (v1.get - v0.get)
 
-    val red: Int = localRound( c0.red + ( (c1.red - c0.red).toDouble * k ) )
+          //println(s"Vals: $value # $v0 # $v1 " + (v1 - v0) )
+          //println("Koeficient:" + k)
 
-    val green : Int = localRound( c0.green + ( (c1.green - c0.green).toDouble * k ) )
+          val red: Int = localRound(c0.get.red + ((c1.get.red - c0.get.red).toDouble * k))
 
-    val blue : Int = localRound( c0.blue + ( (c1.blue - c0.blue).toDouble * k ) )
+          val green: Int = localRound(c0.get.green + ((c1.get.green - c0.get.green).toDouble * k))
 
-    Color(red, green, blue)
+          val blue: Int = localRound(c0.get.blue + ((c1.get.blue - c0.get.blue).toDouble * k))
+
+          Color(red, green, blue)
+
+        } else if (v1 != None && c1 != None) // assume that all values in the second partition
+          partitions._2.head._1._2
+        else
+          partitions._1.last._1._2
+
+
   }
 
   /**
@@ -110,7 +132,27 @@ object Visualization {
     * @return A 360×180 image where each pixel shows the predicted temperature at its location
     */
   def visualize(temperatures: Iterable[(Location, Double)], colors: Iterable[(Double, Color)]): Image = {
-    ???
+
+    val WIDTH = 360
+    val HEIGHT = 180
+
+    val midX = WIDTH  / 2
+    val midY = HEIGHT / 2
+
+    def getPixel(latitude: Double, longitude: Double) : Pixel = {
+
+      val location = Location(latitude, longitude)
+
+      val temperature = predictTemperature( temperatures, location )
+
+      val color = interpolateColor(colors, temperature)
+
+      Pixel(color.red, color.green, color.blue, 255)
+    }
+
+    val pixels = (0 until WIDTH * HEIGHT).map { p => getPixel( (-p / WIDTH + midY), (p % WIDTH - midX) ) }.toArray
+
+    Image(WIDTH, HEIGHT, pixels )
   }
 
 }
