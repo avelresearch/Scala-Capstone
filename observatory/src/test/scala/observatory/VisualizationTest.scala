@@ -33,4 +33,31 @@ class VisualizationTest extends FunSuite with Checkers {
     assert(result == distance)
   }
 
+//
+//  test("List((-1.0,Color(255,0,0)), (0.0,Color(0,0,255))), value = -0.7"){
+//    val value : Double = -0.7
+//    val list : List[(Double, Color)] = List((-1.0,Color(255,0,0)), (0.0,Color(0,0,255)))
+//    val result = Visualization.interpolateColor(list, value)
+//
+//    assert(result === Color(191,0,64))
+//  }
+//
+//  test("List((-1.0,Color(255,0,0)), (24.899394980716096,Color(0,0,255))), value = -11.0"){
+//    val value : Double = -11.0
+//    val list : List[(Double, Color)] = List((-1.0,Color(255,0,0)), (24.899394980716096,Color(0,0,255) ) )
+//    val result = Visualization.interpolateColor(list, value)
+//
+//    assert(result === Color(255,0,0))
+//  }
+
+  //Color(192,0,63). Expected: Color(191,0,64) (scale = List((-1.0,Color(255,0,0)), (0.0,Color(0,0,255))), value = -0.75)
+
+  test("List((-1.0,Color(255,0,0)), (0.0,Color(0,0,255))), value = -0.75"){
+    val value : Double = -0.75
+    val list : List[(Double, Color)] = List((-1.0,Color(255,0,0)), (0.0,Color(0,0,255)))
+    val result = Visualization.interpolateColor(list, value)
+
+    assert(result === Color(191,0,64))
+  }
+
 }

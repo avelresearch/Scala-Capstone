@@ -72,7 +72,36 @@ object Visualization {
     * @return The color that corresponds to `value`, according to the color scale defined by `points`
     */
   def interpolateColor(points: Iterable[(Double, Color)], value: Double): Color = {
-    ???
+
+    def localRound(v : Double) : Int = BigDecimal(v).setScale(0, BigDecimal.RoundingMode.HALF_UP).toInt
+
+    val pointsColor = points.toList.sortWith(_._1 < _._1)
+
+    val partitions = pointsColor.partition(_._1 < value)
+
+    val f = ( partitions._1.headOption, partitions._2.lastOption )
+
+    val c0: Color = f._1 match { case Some( (_, c: Color) ) => c case None => Color(0, 0, 0) }
+
+    val v0 : Double = f._1 match { case Some( (v: Double, _) ) => v case None => if (pointsColor.size > 0) pointsColor.head._1 else 0 }
+
+    val c1: Color = f._2 match { case Some( (_, c: Color) ) => c case None => Color(0, 0, 0) }
+
+    val v1 : Double = f._2 match { case Some( (v: Double, _) ) => v case None => if (pointsColor.size > 0) pointsColor.last._1 else 0  }
+
+    // TODO: use math abs
+    val k : Double =  ( value - v0 ) / ( v1 - v0)
+
+    println(s"Vals: $value # $v0 # $v1 " + (v1 - v0) )
+    println("Koeficient:" + k)
+
+    val red: Int = localRound( c0.red + ( (c1.red - c0.red).toDouble * k ) )
+
+    val green : Int = localRound( c0.green + ( (c1.green - c0.green).toDouble * k ) )
+
+    val blue : Int = localRound( c0.blue + ( (c1.blue - c0.blue).toDouble * k ) )
+
+    Color(red, green, blue)
   }
 
   /**
