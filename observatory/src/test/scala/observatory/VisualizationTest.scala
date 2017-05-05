@@ -92,4 +92,6 @@ class VisualizationTest extends FunSuite with Checkers {
     assert(result === Color(0,0,255) )
   }
 
+
+
 }
