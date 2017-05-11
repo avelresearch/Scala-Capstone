@@ -78,9 +78,9 @@ object Visualization {
   def interpolateColor(points: Iterable[(Double, Color)], value: Double): Color = {
 
 
-    def interpolate(pointMin: Double, pointMax: Double, value: Double, colorValueMin: Int, colorValueMax: Int): Int =
+    def interpolate(min: Double, max: Double, value: Double, colorValueMin: Int, colorValueMax: Int): Int =
     {
-      val f = (value - pointMin) / (pointMax - pointMin)
+      val f = (value - min) / (max - min)
 
       round(colorValueMin + (colorValueMax - colorValueMin) * f)
     }

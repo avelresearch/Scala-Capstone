@@ -10,7 +10,7 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class ExtractionTest extends FunSuite {
-  test("when 0F: should return -17.78C")  {
+  //test("when 0F: should return -17.78C")  {
     //    val zero : Double = 0.toDouble
     //    val result : Double = Extraction.fahrenheitToCelsius(zero)
     //    assert(result === -17.78)
