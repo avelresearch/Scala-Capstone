@@ -1,11 +1,18 @@
 package observatory
 
-import  observatory.utils.Temperature.{LatitudeToRadians, LongitudeToRadians, RadiansToLatitude, RadiansToLongitude}
-import  observatory.utils.{Latitude, Longitude, Radian}
-
 import scala.math._
+import scala.language.postfixOps
+
+case class Latitude(degrees : Double)
+
+case class Longitude(degrees : Double)
+
+case class Radian(degrees : Double)
 
 case class Location(lat: Double, lon: Double) {
+
+  import  observatory.utils.Temperature.{LatitudeToRadians, LongitudeToRadians}
+
   val point: Point = Point( Latitude(lat), Longitude(lon) )
 }
 

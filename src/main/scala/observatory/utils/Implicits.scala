@@ -1,5 +1,7 @@
 package observatory.utils
 
+import observatory.{Latitude, Longitude, Radian}
+
 import scala.language.implicitConversions
 import scala.language.postfixOps
 
