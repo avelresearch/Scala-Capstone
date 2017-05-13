@@ -17,4 +17,12 @@ object Temperature {
     Celsius( degrees ! )
   }
 
+  implicit def LatitudeToRadians(lat : Latitude) : Radian = Radian( lat.degrees.toRadians )
+
+  implicit def LongitudeToRadians(lon : Longitude) : Radian = Radian( lon.degrees.toRadians )
+
+  implicit def RadiansToLatitude(lat: Radian) : Latitude = Latitude( lat.degrees.toDegrees )
+
+  implicit def RadiansToLongitude(lon: Radian) : Longitude = Longitude( lon.degrees.toDegrees )
+
 }

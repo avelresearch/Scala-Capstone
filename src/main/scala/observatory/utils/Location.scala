@@ -5,6 +5,12 @@ import observatory.Location
 import Temperature.FahrenheitToCelsius
 
 
+case class Latitude(degrees : Double)
+
+case class Longitude(degrees : Double)
+
+case class Radian(degrees : Double)
+
 case class Celsius(degrees : Double)
 
 case class Fahrenheit( inVal: String)

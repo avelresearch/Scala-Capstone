@@ -72,5 +72,4 @@ object Extraction extends {
             .mapValues(x =>
                 x.foldLeft(0.0)( (temp, loc) => temp + loc._3 ) / x.size )
 
-
 }
