@@ -27,12 +27,15 @@ object Manipulation {
     * @return A function that, given a latitude and a longitude, returns the average temperature at this location
     */
   def average(temperaturess: Iterable[Iterable[(Location, Double)]]): (Int, Int) => Double = {
+
     val grids: Iterable[(Int, Int) => Double] = temperaturess.map(makeGrid)
 
-    (latitude, longitude) => {
+    (latitude, longitude) =>
+    {
       val temps = grids.map(grid => grid(latitude, longitude))
-      temps.sum / temps.size
+      temps.foldLeft(0.0)( (t:Double, x: Double) => t + x) / temps.size
     }
+
   }
 
   /**
