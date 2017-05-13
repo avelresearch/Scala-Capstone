@@ -24,7 +24,7 @@ case class Point(x: Radian, y: Radian)
 
   lazy val location: Location = Location( x.degrees , y.degrees )
 
-  def haversineEarthDistance(point: Point): Double = earthRadius * getGreatCircleDistance(point)
+  def distance(point: Point): Double = earthRadius * getGreatCircleDistance(point)
 
   def getGreatCircleDistance(other: Point): Double = {
 

@@ -17,7 +17,7 @@ object Visualization {
   def predictTemperature(temperatures: Iterable[(Location, Double)], location: Location): Double = {
 
     def distanceToTemperature(temp: Iterable[(Location, Double)], location: Location): Iterable[(Double, Double)] =
-      temp.map { case (other, t) => (location.point haversineEarthDistance other.point, t) }
+      temp.map { case (other, t) => (location.point distance other.point, t) }
 
 
     def inverseDistance(distanceToTemp: Iterable[(Double, Double)], power: Int): Double =
